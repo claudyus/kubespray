@@ -183,9 +183,15 @@ spec:
           name: tmp-volume
         livenessProbe:
           httpGet:
+{% if dashboard_enable_insecure_port %}
+            scheme: HTTP
+            path: /
+            port: 9090
+{% else %}
             scheme: HTTPS
             path: /
             port: 8443
+{% endif %}
           initialDelaySeconds: 30
           timeoutSeconds: 30
       volumes:
