@@ -152,10 +152,11 @@ spec:
             cpu: {{ dashboard_cpu_requests }}
             memory: {{ dashboard_memory_requests }}
         ports:
-        - containerPort: 8443
-          protocol: TCP
 {% if dashboard_enable_insecure_port %}
         - containerPort: 9090
+          protocol: TCP
+{% else %}
+        - containerPort: 8443
           protocol: TCP
 {% endif %}
         args:
@@ -211,13 +212,11 @@ metadata:
   namespace: {{ system_namespace }}
 spec:
   ports:
+{% if dashboard_enable_insecure_port %}
+    - port: 9090
+{% else %}
     - port: 443
       targetPort: 8443
-      name: https
-{% if dashboard_enable_insecure_port %}
-    - port: 8080
-      targetPort: 9090
-      name: http
 {% endif %}
   selector:
     k8s-app: kubernetes-dashboard
